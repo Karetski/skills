@@ -10,7 +10,7 @@
 
 ## What "right" looks like
 
-There is one address type — a path with a single, validated grammar. Every resource (documents, views, external services, settings, sub-processes, jobs) lives under that path namespace, and there is one resolution interface that turns a path into the resource. The grammar is enforced at parse time; round-trip stability is pinned by property test.
+There is one address type — a path with a single, validated grammar. Every resource (documents, views, external services, settings, sub-processes, jobs) lives under that path namespace, and there is one resolution interface that turns a path into the resource. The grammar is enforced at parse time; roundtrip stability is pinned by property test.
 
 When a new subsystem appears, its resources get a path prefix in the existing namespace; they don't get a new id type and a new lookup function.
 

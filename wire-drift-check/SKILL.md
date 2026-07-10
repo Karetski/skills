@@ -1,6 +1,6 @@
 ---
 name: wire-drift-check
-description: Verify that every mirror, generated artifact, golden fixture, and both sides of a duplicated contract were updated together — the drift specialist of the review family. Roundtrip coverage is a [[behavioral-testing]] concern; the one-source-of-truth rule is [[architecture-canon]]'s Plan 9 star plus "verify mechanically". Triggers — changing a wire format, serialization schema, API contract, shared constant, code-generated mirror, or any artifact duplicated across a boundary (two languages, client/server, generated + hand-written); "did I update both sides", "regenerate the bindings"; run before opening a PR that touches a shared contract.
+description: Verify that every mirror, generated artifact, golden fixture, and both sides of a duplicated contract were updated together. Use when changing a wire format, serialization schema, API contract, shared constant, or code-generated mirror — anything duplicated across a boundary (two languages, client/server, generated plus hand-written) — when asking "did I update both sides" or "regenerate the bindings", or before opening a PR that touches a shared contract. Checks codegen freshness, golden fixtures, roundtrip (encode/decode) coverage, both-sides handling, and discriminant/field-order stability.
 ---
 
 # wire-drift-check
@@ -13,12 +13,12 @@ any boundary where one source of truth is mirrored elsewhere:
 client/server protocols, a schema shared across languages, generated
 bindings, shared constants, config duplicated into multiple runtimes.
 
-Two standards ground it: [[architecture-canon]]'s Plan 9 star (one
-source of truth, mirrors are derived) names *which* file is
-authoritative, and the "verify mechanically, not by convention" rule
-says an unenforced mirror is a future drift — so a missing check is
-itself a finding. The roundtrip coverage in step 3 is the
-[[behavioral-testing]] discipline applied to the boundary.
+Two ideas ground it. One source of truth: exactly one file is
+authoritative and every other copy is *derived* from it — so naming
+which file is authoritative is the first step. Verify mechanically, not
+by convention: an unenforced mirror is a future drift, so a missing
+check is itself a finding. The roundtrip coverage in step 3 is
+black-box behavioral testing applied to the boundary.
 
 ## What this skill does
 
@@ -74,3 +74,10 @@ exact command to run to fix it (the regenerate command, the golden
 updater, the specific mirror to edit). If the project has no codegen or
 check tooling for a duplicated artifact, flag that gap — an unenforced
 mirror is a future drift.
+
+## See also
+
+Stands alone — the skills below are optional companions, not dependencies:
+`architecture-canon` (the single-source-of-truth principle behind it),
+`behavioral-testing` (the roundtrip test tier), and `principle-review` (the
+general review this specializes).

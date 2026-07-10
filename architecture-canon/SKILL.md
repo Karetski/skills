@@ -1,11 +1,11 @@
 ---
 name: architecture-canon
-description: Apply ten borrowed architectural north stars when designing, proposing, auditing, or reviewing anything that adds public surface — a new public type, module, interface, event kind, config key, or extension point. Sister skill to [[coding-discipline]] (agent behavior), [[function-shape]] (per-function shape), and [[behavioral-testing]] (tests). Triggers — proposing a subsystem or surface, "should we add X" / "how should we structure Y", designing an extension or contribution surface, reviewing a PR, auditing hot-path data layout, or fixing a bug whose proper resolution introduces public surface. The principles are hard constraints with explicit *forbids* clauses, not stylistic preferences. Load only the `references/<star>.md` files relevant to the questions in front of you.
+description: Ten borrowed architectural north stars (Hickey, Plan 9, Acton, Erlang, MLIR, LSP, VS Code, Smalltalk, SICP, Observability), each answering one design question with an explicit forbids clause and quotable red flags. Use when designing, proposing, auditing, or reviewing anything that adds public surface — a new type, module, interface, event kind, config key, or extension point — when asking "should we add X" or "how should we structure Y", or when a bug's proper fix introduces such surface. The principles are hard constraints, not stylistic preferences. Load only the reference files the current decision needs.
 ---
 
 # architecture canon
 
-Ten borrowed ideas, each answering one specific design question. This skill is the operational form: each star lives in `references/<star>.md` with its forbids clause and concrete red flags reviewers can quote. Architecture rules live here; agent behavior in [[coding-discipline]]; per-function shape in [[function-shape]]; test shape in [[behavioral-testing]].
+Ten borrowed ideas, each answering one specific design question. This skill is the operational form: each star lives in `references/<star>.md` with its forbids clause and concrete red flags reviewers can quote. It speaks only to architecture — the shape of subsystems and the surfaces between them.
 
 ## Question → star lookup
 
@@ -45,8 +45,6 @@ The principles are direct. Apply them directly. "This violates Plan 9 — two re
 
 When two stars conflict on a design (rare, but it happens — e.g., a late-bound message bus that obscures memory layout), name both and the tradeoff explicitly. Don't pretend it's clean. The user decides which star wins; record the reasoning.
 
-## Scope
+## See also
 
-This skill is the architecture-review layer for design work in any project. It sits alongside [[coding-discipline]] (agent behavior), [[function-shape]] (per-function shape), and [[behavioral-testing]] (tests). Load only the `references/<star>.md` files the current decision needs.
-
-Two **review** skills operationalize these stars against a finished change: [[principle-review]] walks a whole change against the project's principles (and falls back to this canon when none exist), and [[hot-path-budget-audit]] enforces the Acton (`references/acton.md`) and Observability (`references/observability.md`) stars on a latency-critical path. [[wire-drift-check]] enforces the Plan 9 single-source-of-truth (`references/plan9.md`) across a duplicated boundary.
+Stands alone — the skills below are optional companions, not dependencies. These apply the same stars to a finished change: `principle-review` (whole-change review), `hot-path-budget-audit` (enforces the Acton and Observability stars on a latency-critical path), and `wire-drift-check` (enforces the Plan 9 single-source-of-truth across a duplicated boundary). Companion standards: `coding-discipline`, `function-shape`, `behavioral-testing`.

@@ -9,7 +9,7 @@ collapses if they break.
 The archetype (illustrative): a counting-allocator hook installed for the test,
 with allocation deltas asserted to be zero across the hot operation. New
 invariant tests follow that shape and are recorded alongside the design
-principle they protect ([[architecture-canon]]).
+principle they protect.
 
 Kinds of invariant worth pinning:
 

@@ -1,11 +1,11 @@
 ---
 name: function-shape
-description: How an individual function or small module should be shaped — sister skill to [[architecture-canon]] (architecture) and [[coding-discipline]] (agent behavior). Use when writing or reviewing a single function, helper, or tiny owner type; when a function busts ~10 real branches and the question is extract-or-contain; when picking between panic / empty-absent value / typed error / encoded-protocol-failure; when naming a `prepare_x` / `execute_prepared_x` / `finalize_executed_x` pipeline; or when deciding whether a comment earns its line. Phase-flow and cyclomatic ceiling are hard — bust them only inside a named containment zone. Load only the `references/<topic>.md` files relevant to the question.
+description: How an individual function or helper should be shaped — phase flow, a cyclomatic branch ceiling, error-handling moves, pipeline naming, mutation ownership, and when a comment earns its line. Use when writing or reviewing a single function, helper, or tiny owner type; when a function exceeds ~10 real branches and the question is extract-or-contain; when choosing between panic / absent value / typed error / encoded protocol failure; when naming a multi-step pipeline; or when judging whether a comment or helper earns its existence. Load only the reference files the question needs.
 ---
 
 # function shape
 
-Architecture-level rules: [[architecture-canon]]. Agent self-discipline: [[coding-discipline]]. This skill speaks only to what a single function looks like.
+This skill speaks only to what a single function looks like — its internal shape, not the architecture around it or the agent's conduct while writing it.
 
 ## Question → reference
 
@@ -32,4 +32,8 @@ These are short enough to live in the index, not a separate file.
 
 This skill applies to a single function, helper, or tiny owner type in any project and any language. The examples are language-neutral; where an idiom is shown, it is illustrative, not a mandate to use that language. Generated code, parsers, layout walkers, and other containment zones are exempt from the cyclomatic ceiling — but only those.
 
-When a review finds a helper or owner type that doesn't earn its existence (`references/mutation-owners.md`), the fix is a deletion — hand it to [[simplify-ruthless]], the review skill that outputs a ranked deletion list rather than a rename.
+When a review finds a helper or owner type that doesn't earn its existence (`references/mutation-owners.md`), the fix is a deletion, not a rename.
+
+## See also
+
+Stands alone — the skills below are optional companions, not dependencies: `architecture-canon` (subsystem-level design), `coding-discipline` (agent conduct), and `simplify-ruthless` (a ranked deletion audit for helpers that don't earn their keep).

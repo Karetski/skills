@@ -18,8 +18,6 @@ One telemetry pipeline, gated by the application's log-filter env var. Levels ar
 
 Adding a span at any level means re-running the matching allocation-invariant test (a counting-allocator test over the hot path) to confirm zero net allocations introduced. The test is the source of truth; if it fails after a span lands, the span placement is wrong.
 
-Operational details (level discipline, test-time verification) live in [[behavioral-testing]] `references/invariants.md`.
-
 ## Red flags
 
 - A raw print-to-stdout/stderr or debug-dump call in application code. → Replace with a tracing event at the appropriate level. Application stdout/stderr may be swallowed by a full-screen surface or discarded by a daemonized process, and carries no level or trace id even when it survives.

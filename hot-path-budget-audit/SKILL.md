@@ -1,6 +1,6 @@
 ---
 name: hot-path-budget-audit
-description: Static audit of a latency-critical path for blocking IO, allocations, unbounded work, and budget violations — the performance specialist of the review family. Grounded in [[architecture-canon]]'s Acton star (data layout is the design) and Observability star (hot-path silence); its allocation and budget claims are pinned as [[behavioral-testing]] invariants (`references/invariants.md`). Triggers — adding or changing code on a hot path (a game/simulation tick, a render frame, a request handler, an event-loop callback, an inner loop), or investigating gradual performance degradation. A per-iteration time budget is one of the hardest invariants to maintain, because violating it rarely fails a test; it degrades under load.
+description: Static audit of a latency-critical path for blocking IO, allocations, unbounded work, and per-iteration budget violations. Use when adding or changing code on a hot path (a game or simulation tick, a render frame, a request handler, an event-loop callback, an inner loop) or when investigating gradual performance degradation. Enumerates the path, flags forbidden operations per function, bounds each unit of work, estimates worst-case cost, and returns a green/yellow/red verdict per unit. A per-iteration time budget is one of the hardest properties to hold, because violating it rarely fails a test — it degrades under load.
 ---
 
 # hot-path-budget-audit
@@ -12,15 +12,14 @@ collapse that only appears under real load, after which they're
 expensive to root-cause. Static audit is cheaper than reactive
 profiling.
 
-This audit is the enforcement arm of two [[architecture-canon]] stars:
-Acton (choose the data layout so hot walks are allocation-free —
-[[architecture-canon]] `references/acton.md`) and Observability (no span
-belongs on a hot path without re-running its allocation invariant —
-[[architecture-canon]] `references/observability.md`). The
-green/yellow/red verdict below is a static estimate; the durable proof
-is a [[behavioral-testing]] invariant test (a counting-allocator pin, a
-bounded-depth pin — [[behavioral-testing]] `references/invariants.md`)
-that fails the build when the property breaks.
+Two ideas ground this audit. Data layout is the design: choose the
+layout so hot walks are allocation-free (arena-backed handles and typed
+enums over boxed trait objects and per-call collections), rather than
+bolting on optimization later. And a hot path stays quiet: no
+instrumentation span belongs there without re-confirming it adds zero
+allocations. The green/yellow/red verdict below is a static estimate;
+the durable proof is an invariant test — a counting-allocator pin or a
+bounded-depth pin — that fails the build when the property breaks.
 
 ## What this skill does
 
@@ -73,9 +72,19 @@ that fails the build when the property breaks.
    - 🔴 Red: unbounded, blocking, or does IO on the hot path. Must be
      fixed before merge.
 
+   When a unit (each function or operation on the path) trips more than
+   one tier, take the most severe: red > yellow > green.
+
 ## What earns a "must be fixed before merge"
 
 A red verdict is non-negotiable. The remediation is almost always the
 same: move the work off the hot path — behind a non-blocking queue to a
 background worker, into a cache invalidated out-of-band, or into a
 bounded index lookup — so the per-iteration budget is preserved.
+
+## See also
+
+Stands alone — the skills below are optional companions, not dependencies:
+`architecture-canon` (the data-layout and hot-path-silence principles behind
+it), `behavioral-testing` (the invariant test tier that pins the result), and
+`principle-review` (the general review this specializes).

@@ -13,5 +13,5 @@ The third move has a precondition: it only applies when there *is* a surrounding
 ## Red flags
 
 - A function whose job is "detect the issue" also formats, logs, prompts, or repairs. → Split. Detector returns facts; presenter formats; recoverer repairs.
-- An invariant violation is silently logged and the function returns a default (or an error result is discarded). → That's the swallow-discard pattern the supervision star explicitly forbids ([[architecture-canon]] `references/erlang.md`); route the fault up as a typed failure event so the supervisor sees it.
+- An invariant violation is silently logged and the function returns a default (or an error result is discarded). → That's the swallow-discard anti-pattern: a fault disappears where no one can react to it. Route it up as a typed failure the surrounding lifecycle can observe.
 - A long-running task panics on an external/provider failure that the surrounding subsystem is supposed to survive. → Encode the failure as a typed event and let the supervisor's restart policy decide; don't tear down the lifecycle.

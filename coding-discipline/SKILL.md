@@ -1,11 +1,11 @@
 ---
 name: coding-discipline
-description: How to behave when doing coding work on any project — the agent's self-discipline layer beneath [[architecture-canon]] (architecture), [[function-shape]] (per-function shape), and [[behavioral-testing]] (tests). Four defaults that bias toward caution over speed. Triggers — fix, bug, broken, crash, regression, issue #N, PR #N, add, introduce, new, extend, refactor, implement, build, design; reviewing a diff; editing persistent text (code comments, docs, skill files, memory files). The calibration checks are hard — if one fails, slow down or surface the tradeoff; don't silently optimize discipline away.
+description: Self-discipline defaults for coding work — think before coding, simplicity first, surgical changes, goal-driven execution — biasing toward caution over speed. Use when fixing a bug or regression, adding or extending a feature, refactoring, implementing or designing something, reviewing a diff, or editing any persistent text (code comments, docs, memory or skill files). Ends with a calibration checklist to walk before handing off a change; if a check fails, slow down or surface the tradeoff rather than shipping past it.
 ---
 
 # coding discipline
 
-How to behave when doing coding work. Architecture rules live in [[architecture-canon]]; per-function shape in [[function-shape]]; test shape in [[behavioral-testing]]. This skill sits beneath them — its rules hold whether you're proposing a subsystem or fixing a typo.
+How to behave when doing coding work. These rules govern the agent's own conduct — not the shape of the code or its tests — and hold whether you're proposing a subsystem or fixing a typo.
 
 Four defaults. Each biases toward caution over speed. Use judgment for trivial work, but the calibration walk at the end is not optional.
 
@@ -27,7 +27,7 @@ Before implementing:
 - A new public surface — an API endpoint, event kind, config key, capability flag, schema field — appears in a diff without a prior conversation. → Gestalt move. Surface it; don't ship it.
 - A naming-convention shift (one prefix or suffix scheme swapped for another) applied across files in one pass. → Propose, don't apply.
 - A refactor "while we're here" changes a public contract. → Out of scope. Separate it or ask first.
-- The diff resolves a tradeoff between two competing principles without recording the reasoning. → Name both and let the user decide which wins. ([[architecture-canon]]: "the user decides which principle wins; record the reasoning.")
+- The diff resolves a tradeoff between two competing principles without recording the reasoning. → Name both and let the user decide which wins; record the reasoning in the change.
 
 ## 2. Simplicity first
 
@@ -36,7 +36,7 @@ Before implementing:
 - No features beyond what was asked.
 - No abstractions for single-use code.
 - No "flexibility" or "configurability" that wasn't requested.
-- No error handling for scenarios that can't happen ([[function-shape]] `references/error-handling.md` for the three legitimate moves).
+- No error handling for scenarios that can't happen. Handle a failure only when it can actually occur and the caller can act on it.
 - 200 lines that could be 50 — rewrite to 50.
 
 Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
@@ -47,10 +47,10 @@ Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, sim
 
 - A backlog, follow-up list, or annex has grown to N entries and the natural move is "add one more." → Step back. Surface: "This file has grown to N; should I add, prune, replace, or stop maintaining?"
 - A helper exists with a name close to what's needed; the easy move is to add a sibling. → First check whether the existing helper should absorb the new case. Two helpers with overlapping intent is the same mistake, doubled.
-- Introducing a registry / manager / factory / interface when a plain function would do. → Justify it from the domain's actual constraints; if you can't, drop it. ([[architecture-canon]] Hickey applies.)
+- Introducing a registry / manager / factory / interface when a plain function would do. → Justify it from the domain's actual constraints; if you can't, drop it.
 - The "obvious" pattern is the one already loaded in context, not the one that fits the new case. → Name the pattern out loud and justify the next instance from the domain, not from precedent.
 
-When the task is explicitly *delete* or *trim* rather than *write*, run [[simplify-ruthless]] — it turns this default into a ranked deletion audit against code that already exists.
+When the task is explicitly *delete* or *trim* rather than *write*, turn this default into a ranked deletion audit against the code that already exists: output what to remove, ordered by lines removed, never additions.
 
 ## 3. Surgical changes
 
@@ -132,6 +132,6 @@ Before handing off a slice, walk this list:
 
 If any answer is no, slow down. Name it. Don't ship past it.
 
-## Scope
+## See also
 
-This skill is the base discipline layer for coding work in any project. The other **standards** skills layer on top of it — [[architecture-canon]] for design, [[function-shape]] for per-function shape, [[behavioral-testing]] for tests. The **review** skills are the audit verbs you run against a finished change: [[principle-review]] for whole-change principle alignment, [[simplify-ruthless]] for deletion, [[wire-drift-check]] for duplicated contracts, [[hot-path-budget-audit]] for latency-critical paths.
+Stands alone — the skills below are optional companions, not dependencies. The standards `architecture-canon` (design-level rules), `function-shape` (per-function shape), and `behavioral-testing` (test shape) layer with it; the review verbs `principle-review`, `simplify-ruthless`, `wire-drift-check`, and `hot-path-budget-audit` run against a finished change.

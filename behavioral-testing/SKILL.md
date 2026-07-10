@@ -1,6 +1,6 @@
 ---
 name: behavioral-testing
-description: How tests are shaped and where they live — sister skill to [[architecture-canon]], [[function-shape]], [[coding-discipline]]. Use when writing or moving any test, when adding a new public API and deciding what to verify, when a co-located unit-test block appears in a diff (it shouldn't), when a test wants to reach into an internal item (decide promote-to-public / drive-through-public-API / delete), or when picking between a behavioral scenario and a physical invariant. The black-box rule and `given_…_when_…_then_…` naming are hard. Load only the `references/<topic>.md` files relevant to the question.
+description: How tests are shaped and where they live — black-box and behavioral, outside the source tree, calling only the public contract, named as given/when/then scenarios. Use when writing or moving a test, deciding what to verify for a new public API, when a co-located unit-test block appears in a diff (it shouldn't), when a test wants to reach an internal item (promote-to-public / drive-through-public-API / delete), or when separating a behavioral scenario from a physical invariant (an allocation or depth pin). Load only the reference files the question needs.
 ---
 
 # behavioral testing
@@ -68,9 +68,10 @@ directory sits, how test binaries are compiled, how internal visibility works �
 are the language-adapter layer: map them onto your toolchain, keep the spine
 intact.
 
-Two **review** skills lean on the test tiers here. [[hot-path-budget-audit]]
-turns its green/yellow/red verdicts into durable proof via the invariant tier
-(`references/invariants.md` — counting-allocator and bounded-depth pins).
-[[wire-drift-check]] relies on the roundtrip (encode → decode → assert equal)
-coverage that the behavior and pipeline tiers provide across a duplicated
-boundary.
+## See also
+
+Stands alone — the skills below are optional companions, not dependencies.
+`hot-path-budget-audit` turns its verdicts into durable proof via the invariant
+tier (`references/invariants.md`); `wire-drift-check` relies on the roundtrip
+coverage the behavior and pipeline tiers provide. Companion standards:
+`architecture-canon`, `function-shape`, `coding-discipline`.

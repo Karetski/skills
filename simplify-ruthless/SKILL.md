@@ -1,6 +1,6 @@
 ---
 name: simplify-ruthless
-description: Ruthless deletion audit — the action form of [[coding-discipline]]'s "simplicity first", enforcing [[architecture-canon]] (Hickey) and [[function-shape]]. Output is a ranked deletion list, never additions. Triggers — "simplify this", "is this overkill", "tighten this module", "can we delete X", "this feels heavy", "is this over-engineered", trimming a feature, or auditing an abstraction for its keep. Back off if the request is "make this work" (a debugging session), not "make this smaller".
+description: Ruthless deletion audit whose output is a ranked deletion list, never additions. Use when asked to "simplify this", "tighten this module", "can we delete X", when something "feels heavy", "is this overkill / over-engineered", when trimming a feature, or when auditing an abstraction for whether it earns its keep. Tests each abstraction against over-engineering smells (rule of three, speculative flexibility, one-caller generics, pass-through wrappers, single-implementation interfaces) and ranks deletions by lines removed. Backs off when the request is "make this work" (a debugging session), not "make this smaller".
 ---
 
 # simplify-ruthless
@@ -10,12 +10,11 @@ ambient ("clean this up") rather than explicit ("delete this"). This
 skill exists so the user can invoke "delete more" as a first-class
 request. The bias is **delete first**.
 
-This is the action form of [[coding-discipline]] §2 (*Simplicity
-first*): that skill states the default while you write; this one is the
-audit you run against code that already exists. Its deletion triggers
-enforce [[architecture-canon]]'s Hickey star (a complected type is
-un-braided by deletion, not addition) and [[function-shape]] (a helper
-that doesn't earn its existence is a deletion, not a rename).
+Where a write-time discipline states "simplicity first" as a default,
+this is the audit you run against code that already exists. Two ideas
+ground it: a complected type — one that braids state, identity,
+lifecycle, and behavior — is un-braided by deletion, not addition; and
+a helper that doesn't earn its existence is a deletion, not a rename.
 
 ## What this skill does
 
@@ -72,3 +71,10 @@ that doesn't earn its existence is a deletion, not a rename).
 If the user has framed the request as "make this work" rather than
 "make this smaller," do nothing and say so. Forced simplification
 during a debugging session is how regressions ship.
+
+## See also
+
+Stands alone — the skills below are optional companions, not
+dependencies: `coding-discipline` (the write-time "simplicity first"
+default), `architecture-canon` (the design-level case against complected
+types), and `function-shape` (when a helper earns its existence).
