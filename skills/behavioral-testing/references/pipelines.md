@@ -62,5 +62,8 @@ bypass of it.
   it's actually a pipeline file (rename) or the subsystem can be exercised
   directly (downgrade to a behavior).
 - A pipeline scenario that calls into internal items via a testing-only path
-  the public contract doesn't expose. → Either the path is contract (promote)
-  or the test is pinning structure (delete).
+  the public contract doesn't expose. → In an out-of-tree / black-box ecosystem,
+  either the path is contract (promote) or the test is pinning structure
+  (delete). Where your ecosystem blesses white-box access (Go same-package,
+  Rust `#[cfg(test)]`, JS co-located), reaching an internal directly is
+  legitimate — that's the local convention, not a violation.

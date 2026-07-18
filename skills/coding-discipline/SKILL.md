@@ -15,10 +15,9 @@ Four defaults. Each biases toward caution over speed. Use judgment for trivial w
 
 Before implementing:
 
-- State assumptions explicitly. If uncertain, ask.
+- State assumptions explicitly. If anything is unclear or uncertain, stop, name what's confusing, and ask.
 - If multiple interpretations exist, present them — don't pick silently.
 - If a simpler approach exists, say so. Push back on speculative scope.
-- If something is unclear, stop. Name what's confusing. Ask.
 
 **Gestalt is the human's.** Architecture, public API surface, the core data model, naming conventions, and which principle wins a tradeoff are the user's calls. Build them step-by-step with the user, not silently inside a diff.
 
@@ -85,11 +84,12 @@ The test: every changed line should trace directly to the request.
 
 **Define success criteria up front. Loop until verified. Be honest about what didn't.**
 
-Transform tasks into verifiable goals at the start:
+Transform tasks into verifiable goals at the start. A verifiable goal is an *observable* success check — for code that usually means a test; for work with no test surface (docs, a memory or skill file, a config edit) it's whatever you can actually observe:
 
 - "Add validation" → "Write tests for invalid inputs, then make them pass."
 - "Fix the bug" → "Write a test that reproduces it, then make it pass."
 - "Refactor X" → "Tests pass before and after; no public surface changes."
+- "Update the docs / a memory file" → "Re-read the edited section cold; it stands alone and states the current reality." (No test to run — the observable check is the cold read, per *Persistent edits stand alone* above.)
 
 For multi-step work, state a brief plan:
 

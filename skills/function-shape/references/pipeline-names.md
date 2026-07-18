@@ -1,5 +1,7 @@
 # Pipeline naming — handrails the reader can skim
 
+This applies to a **side-effecting or staged execution pipeline** (validate → run → finalize). A pure computation split into helpers (a pricing calc broken into `applyCoupon` / `applyTax`) is *not* a prepare/execute/finalize pipeline — name those by what they compute, not with pipeline verbs; forcing `prepare_`/`execute_` onto a pure calc produces lying names.
+
 When work breaks into a pipeline, name the steps so the reader doesn't need archaeology tongs to discover the order:
 
 - `prepare_x` → validate, apply preflight policy, return a ready-to-execute value.

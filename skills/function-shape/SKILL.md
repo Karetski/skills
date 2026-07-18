@@ -14,7 +14,7 @@ Pick the row that matches the decision in front of you. Don't pre-load all refer
 | Question | Reference |
 |---|---|
 | Does this function read as one concept? Is it past the branch ceiling? | `references/phase-flow.md` |
-| Should this failure be a panic, a typed error, or an encoded protocol failure? | `references/error-handling.md` |
+| Should this failure be a panic, an absent value (None/null), a typed error, or an encoded protocol failure? (the last assumes a supervised/actor lifecycle — most code uses the first three) | `references/error-handling.md` |
 | What do I name the steps of a multi-step pipeline? | `references/pipeline-names.md` |
 | Where should this mutation live? Does this owner earn its existence? | `references/mutation-owners.md` |
 | Does this comment earn its line? Doc comment or inline? | `references/comments.md` |

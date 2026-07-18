@@ -1,6 +1,8 @@
 # Plan 9 — uniform addressing via namespaces
 
-> **Principle.** Every resource — local, remote, in-memory, hardware — is a node in a hierarchical namespace, accessed through one interface.
+> **Principle.** Every resource — local, remote, in-memory, hardware — is a node in a hierarchical namespace, accessed through one interface (in Plan 9, the 9P file protocol: everything is a file).
+
+**Fidelity note.** The paper's actual novelty is that namespaces are *per-process* — each process composes its own view by mounting resources where it wants them — not that there is one global tree. The durable design lesson borrowed here is the uniform-addressing half (one grammar, one resolution interface for every resource kind); if you also need dynamic per-context composition, that's the deeper Plan 9 idea.
 
 **Forbids.** A second addressing scheme. Distinct resource kinds — documents, views, external services, sub-processes, jobs, settings — live at paths in one namespace, not in several ad-hoc registries with different lookup APIs.
 

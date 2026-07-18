@@ -1,6 +1,8 @@
 # Observability — structured spans, hot-path silence
 
-> **Principle.** Runtime telemetry flows through one structured tracing pipeline so production code, tests, and diagnostics share one event stream. Levels are budgeted by call frequency.
+> **Principle.** Runtime telemetry flows through one structured tracing pipeline so production code, tests, and diagnostics share one event stream.
+
+**House rule, not canon.** The "levels budgeted by call frequency" convention below (INFO on cold paths, TRACE off by default on hot paths) is an authoring opinion, not part of the observability canon — standard practice controls volume with *sampling*, not level-by-frequency. It's a useful discipline where a hot path has a zero-allocation invariant to protect; treat it as a local convention, not a sourced law. The sourced principle is the single structured pipeline (one collector, structured events over ad-hoc prints).
 
 **Forbids.** Ad-hoc print-to-stdout/stderr instrumentation in application code — it arrives without a level, a timestamp, or a request/trace id, and in some hosts never arrives at all (a full-screen terminal surface swallows it; a captured or daemonized process discards it). Adding spans inside a hot path without re-running the matching allocation-invariant test to confirm zero net allocations — a failing invariant means the span placement is wrong, not the invariant.
 

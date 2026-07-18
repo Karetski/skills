@@ -9,25 +9,28 @@ Ten borrowed ideas, each answering one specific design question. This skill is t
 
 ## Question → star lookup
 
-When a design choice is up in the air, find the question, load the reference, walk the forbids.
+When a design choice is up in the air, find the question, load the reference, walk the forbids. The **Applies to** column tells you whether a star bites on any codebase or only in its native habitat — don't force a habitat-bound star onto code with no such surface (a React app has no extension protocol; a CRUD service has no per-frame budget).
 
-| Question | Star | Reference |
-|---|---|---|
-| What is this thing? | MLIR, Plan 9 | `references/mlir.md`, `references/plan9.md` |
-| How is it addressed? | Plan 9 | `references/plan9.md` |
-| How is it bound? | Smalltalk | `references/smalltalk.md` |
-| How does it lay out in memory? | Acton | `references/acton.md` |
-| What happens when it fails? | Erlang | `references/erlang.md` |
-| How is it observed? | Observability | `references/observability.md` |
-| How does an extension reach it? | LSP, VS Code | `references/lsp.md`, `references/vscode.md` |
-| Is it doing one thing? | Hickey | `references/hickey.md` |
-| Does it have primitives, combination, and abstraction? | SICP | `references/sicp.md` |
+| Question | Star | Applies to | Reference |
+|---|---|---|---|
+| Is it doing one thing? | Hickey | **any codebase** | `references/hickey.md` |
+| Does it have primitives, combination, and abstraction? | SICP | **any codebase** | `references/sicp.md` |
+| What is this thing? | MLIR | any codebase *with a structural vocabulary / "kind" enum*; where none exists it reduces to Hickey's one-thing check | `references/mlir.md` |
+| How does an extension reach it? | LSP | plugin / integration surfaces; the M→M+N insight generalizes | `references/lsp.md` |
+| What does the extension contribute? | VS Code | projects with a real plugin/extension surface | `references/vscode.md` |
+| How is it addressed? | Plan 9 | systems with many resource kinds (OS, storage, routing) | `references/plan9.md` |
+| How does it lay out in memory? | Acton | systems / games / hot-path perf code | `references/acton.md` |
+| What happens when it fails? | Erlang | concurrent / fault-tolerant / long-running services | `references/erlang.md` |
+| How is it bound? | Smalltalk | codebases with an event/message spine, or a feature that is inherently event-shaped | `references/smalltalk.md` |
+| How is it observed? | Observability | services / distributed / production ops | `references/observability.md` |
+
+Rule of thumb: **Hickey and SICP apply to any design; MLIR too wherever there's a structural "kind" vocabulary** (and where there isn't, it degrades to Hickey's one-thing check rather than forcing a finding). The rest earn their keep only when the code actually has the surface they describe. If you're reviewing a design and a star's habitat isn't present, that star simply doesn't apply — say so and move on; don't manufacture a violation.
 
 ## How to apply
 
 Three modes:
 
-**Proposing a feature.** Walk the table top-to-bottom; load each reference and name the star's answer for the proposal. A row with no answer means the proposal isn't ready — say so, name the missing piece, don't paper over it.
+**Proposing a feature.** Walk the rows whose habitat the proposal actually has (always the universal three; the rest only if the surface is present); load each reference and name the star's answer. A row that applies but has *no* answer means the proposal isn't ready — say so, name the missing piece, don't paper over it. A row whose habitat is absent is skipped, not failed.
 
 **Auditing existing code.** Each reference has a *red flags* section. If the code matches a red flag, the violation is real — name the star, quote the forbids clause.
 
@@ -44,6 +47,8 @@ References are deliberately abstract — they don't pin to specific files or sym
 The principles are direct. Apply them directly. "This violates Plan 9 — two resource kinds share one namespace already, and you're proposing a second registry with its own lookup" is the right phrasing. Hedged "maybe consider possibly using…" is not. The principles are the bar; either a proposal clears it or it doesn't. Name the violation, quote the forbids, and point at the relevant existing concept when describing what right looks like.
 
 When two stars conflict on a design (rare, but it happens — e.g., a late-bound message bus that obscures memory layout), name both and the tradeoff explicitly. Don't pretend it's clean. The user decides which star wins; record the reasoning.
+
+Conversely, when several stars flag the *same* root cause — a feature built as a standalone silo will often trip MLIR (parallel subsystem), Plan 9 (second addressing scheme), Smalltalk (direct wire), and Hickey (braided type) at once — report it as **one** defect with several lenses as independent reasons, not as four separate findings. The lenses corroborate; they don't multiply the problem count.
 
 ## See also
 

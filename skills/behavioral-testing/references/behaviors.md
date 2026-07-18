@@ -1,6 +1,10 @@
 # Behavioral scenarios
 
-Behaviors answer **"does the public API do the right thing?"** Most tests are behaviors.
+Behaviors answer **"does the observable behavior do the right thing?"** Most
+tests are behaviors. Prefer to drive that behavior through the public surface —
+but where your ecosystem blesses white-box unit tests (Go same-package, Rust
+`#[cfg(test)]`, JS co-located), a behavior may exercise an internal directly;
+see the *Placement & visibility* section of the skill.
 
 One `behaviors_<area>` file per public subsystem, not one per source file.
 

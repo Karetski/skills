@@ -1,6 +1,7 @@
 ---
 name: principle-review
 description: Review a substantial change against the project's own stated principles, one principle at a time; when the project has no principles doc, fall back to a built-in rubric (deep modules, least surprise, single source of truth, simplicity, predictability, verify-mechanically). Use before merging a new feature, module, or subsystem, when asked "does this fit our design" / "is this the right shape", when auditing a PR for convention alignment, or when onboarding a change into an unfamiliar codebase. Reads the design doc, walks the change against it principle by principle, and ends with a ship / revise / reject verdict.
+context: fork
 ---
 
 # principle-review
@@ -23,8 +24,9 @@ built-in fallback rubric second, and it names the specialized checks
    rubric, not your memory of them. If the project has **no** stated
    principles, say so and fall back to the built-in rubric below (the
    lenses in step 2), plus widely-held principles: deep modules, least
-   surprise, single source of truth, verify-mechanically. Flag that the
-   project would benefit from writing its own principles down.
+   surprise, single source of truth, simplicity, predictability,
+   verify-mechanically. Flag that the project would benefit from writing
+   its own principles down.
 
 2. **For the change under review, walk every principle by name.** For
    each principle the change actually engages with, write one short
@@ -54,9 +56,11 @@ built-in fallback rubric second, and it names the specialized checks
      abstraction is premature.
 
 3. **Module-boundary direction.** Reconstruct the project's dependency
-   direction (its module / package / layer DAG). Any import that runs
-   against the intended direction is a smell — name it with the file
-   path.
+   direction (its module / package / layer DAG). If no doc states the
+   intended direction, infer it from the package/layer names and structure
+   (e.g. `web → service → storage`, with storage innermost) and state the
+   assumption you're reviewing against. Any import that runs against that
+   direction is a smell — name it with the file path.
 
 4. **Doc-shape check.** New durable architectural decisions belong
    wherever the project keeps durable decisions (its principles doc, a
@@ -84,6 +88,14 @@ built-in fallback rubric second, and it names the specialized checks
 A principle-anchored review, one short paragraph per principle the
 change actually engages with. Skip principles that don't apply. End
 with a single-line verdict: ship / revise / reject.
+
+## Relation to built-in review
+
+This complements, rather than replaces, Claude Code's bundled `/code-review`
+(correctness bugs plus reuse/simplification/efficiency cleanup). Run `/code-review`
+for *defects*; run this for *design and principle alignment* against the project's
+own stated rubric. They layer — the built-in does the mechanical heavy lifting, this
+adds your house standards on top.
 
 ## See also
 

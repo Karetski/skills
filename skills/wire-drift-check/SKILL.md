@@ -1,6 +1,7 @@
 ---
 name: wire-drift-check
 description: Verify that every mirror, generated artifact, golden fixture, and both sides of a duplicated contract were updated together. Use when changing a wire format, serialization schema, API contract, shared constant, or code-generated mirror — anything duplicated across a boundary (two languages, client/server, generated plus hand-written) — when asking "did I update both sides" or "regenerate the bindings", or before opening a PR that touches a shared contract. Checks codegen freshness, golden fixtures, roundtrip (encode/decode) coverage, both-sides handling, and discriminant/field-order stability.
+context: fork
 ---
 
 # wire-drift-check
@@ -55,11 +56,18 @@ fixtures, documentation). Then verify, in order:
    worst.
 
 5. **Discriminants / field order / tags are stable.**
-   If the encoding numbers variants or fields by declaration order (as
-   many binary codecs do), reordering an existing type silently breaks
-   every peer. Adding a new variant at the end is usually safe;
-   reordering or removing is a breaking change. Confirm no existing
-   discriminant, tag, or field position moved.
+   First determine the codec class, because the invariant differs:
+   - **Tag-based** (Protobuf, Thrift, Cap'n Proto): fields/variants carry
+     explicit numbers. Reordering is *safe iff every existing number is
+     preserved and never reused* — so a mid-enum insert is fine only if it
+     takes a fresh unused number. The real break is renumbering or reusing a
+     retired number; check the *numbers*, not the source order.
+   - **Order-based** (bincode and other positional formats, declaration-order
+     enums): position *is* the discriminant, so reordering an existing type
+     silently breaks every peer; appending at the end is usually safe.
+   Confirm the invariant that actually applies to your codec: no existing
+   tag/number moved or was reused (tag-based), or no existing position moved
+   (order-based).
 
 6. **Shared constants agree across every mirror.**
    If a constant lives in one source-of-truth file and is mirrored into
@@ -74,6 +82,26 @@ exact command to run to fix it (the regenerate command, the golden
 updater, the specific mirror to edit). If the project has no codegen or
 check tooling for a duplicated artifact, flag that gap — an unenforced
 mirror is a future drift.
+
+## Prefer a hook or CI check over this skill
+
+By its own "verify mechanically, not by convention" logic, the mechanical
+steps here should not depend on someone remembering to run a review. Steps 1
+(codegen freshness), 2 (stale fixtures), and 6 (mirrored-constant equality) are
+deterministic — a `git diff --exit-code` after regeneration, run in a
+pre-commit hook or CI job, enforces them on *every* change with zero judgment.
+When you find one of these gaps, the durable fix is to add that check, not to
+re-run this skill next time.
+
+This repo ships a companion `PostToolUse` hook
+(`hooks/wire-drift-reminder.sh`, with an example wiring in
+`hooks/settings.hook.example.json` to merge into your `~/.claude/settings.json`)
+that fires the *reminder* automatically the moment a contract/schema source
+(`.proto`, `.graphql`, `schema.*`, …) is edited — so the nudge itself is
+mechanical once wired, even before you add the project's own codegen check. This
+skill is the fallback for the judgment-bearing steps (3 roundtrip coverage,
+4 both-sides-handled) and for projects that don't yet have the deterministic
+checks wired.
 
 ## See also
 

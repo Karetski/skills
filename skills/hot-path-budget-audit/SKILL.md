@@ -1,6 +1,7 @@
 ---
 name: hot-path-budget-audit
 description: Static audit of a latency-critical path for blocking IO, allocations, unbounded work, and per-iteration budget violations. Use when adding or changing code on a hot path (a game or simulation tick, a render frame, a request handler, an event-loop callback, an inner loop) or when investigating gradual performance degradation. Enumerates the path, flags forbidden operations per function, bounds each unit of work, estimates worst-case cost, and returns a green/yellow/red verdict per unit. A per-iteration time budget is one of the hardest properties to hold, because violating it rarely fails a test — it degrades under load.
+context: fork
 ---
 
 # hot-path-budget-audit
@@ -20,6 +21,35 @@ instrumentation span belongs there without re-confirming it adds zero
 allocations. The green/yellow/red verdict below is a static estimate;
 the durable proof is an invariant test — a counting-allocator pin or a
 bounded-depth pin — that fails the build when the property breaks.
+
+## Across languages
+
+The spine — **bounded work per iteration, no blocking IO on the path, no
+unbounded scan** — holds in every language. What the "forbidden operations"
+look like differs, so read step 2 through the right lens:
+
+- **Systems / no-GC (Rust, C++, Zig):** inner-loop allocations, boxed trait
+  objects on a hot walk, and locks held across `await` are the classic
+  offenders; the durable proof is a counting-allocator invariant. The framing
+  below is native here.
+- **GC languages (JS/TS, Python, Java, Go, Swift, Kotlin):** you rarely
+  hand-audit individual allocations — the GC changes that analysis. The
+  offenders that actually bite: blocking / synchronous IO in a request handler
+  or render, **N+1 queries**, unbounded fan-out or full-table/collection scans,
+  **re-render storms** and recomputing derived state every frame/tick, and
+  awaiting backpressure inline. Allocation pressure still matters at scale (GC
+  pause time), but as "don't allocate megabytes per request," not "zero
+  allocations per iteration."
+
+On a GC path the durable proof isn't a counting-allocator pin but an assertion
+on the *observable* cost: a query-count test (assert the handler issues exactly
+one query, not N), a bounded-concurrency check, or a p99-latency regression
+snapshot in CI. Pin the property that would actually degrade, in the terms your
+runtime exposes.
+
+Keep the bounded-work / no-blocking-IO / no-unbounded-scan checks everywhere;
+treat the zero-allocation, arena-layout, and boxed-trait-object items as
+systems-specific and skip them on a GC-language path.
 
 ## What this skill does
 
@@ -42,9 +72,12 @@ bounded-depth pin — that fails the build when the property breaks.
    - **Unbounded iteration**: scanning the whole world/table/dataset
      when the work only needs a bounded neighbourhood, a spatial cell,
      an index lookup, or the subscribers of one channel.
-   - **Locks held across `await` / yield points**: on an async path
-     there should ideally be no awaits at all in the hot section; flag
-     both the await and any lock that spans it.
+   - **Locks held across `await`, and serialized awaits in a loop**: a
+     lock spanning an await stalls an async path — flag both. On a
+     request handler, awaiting IO is the *point*; the defect is a
+     *serialized* await inside a per-item loop (the N+1 shape) — batch it
+     or bound the concurrency (`Promise.all` over a capped batch), don't
+     await one item at a time.
    - **Awaiting a full channel / backpressure inline**: a send that
      blocks when the queue is full stalls the whole path. Prefer a
      non-blocking `try_send` and count drops via a metric.
@@ -65,10 +98,17 @@ bounded-depth pin — that fails the build when the property breaks.
    yellow flag at small N and a red flag as N grows.
 
 5. **Output a verdict per unit.**
-   - 🟢 Green: bounded, allocation-free in the inner loop, no blocking
-     IO.
-   - 🟡 Yellow: bounded but allocates, or has a documented "runs once
-     per interval, not per iteration" exception.
+   - 🟢 Green: bounded, no blocking IO, and no allocation that matters
+     for the path's language — systems/no-GC: allocation-free in the
+     inner loop; GC languages: no GC-pressuring allocation (an ordinary
+     `push` or object literal is green).
+   - 🟡 Yellow: allocates *at a scale that matters for the path's
+     language* (systems/no-GC: any inner-loop allocation; GC languages:
+     only allocation heavy enough to pressure the GC, e.g. megabytes per
+     request — **not** an ordinary `push` or object literal); or, on a
+     systems hot walk, dispatches through a boxed trait object / indirect
+     vtable where a typed enum would inline; or has a documented "runs
+     once per interval, not per iteration" exception.
    - 🔴 Red: unbounded, blocking, or does IO on the hot path. Must be
      fixed before merge.
 

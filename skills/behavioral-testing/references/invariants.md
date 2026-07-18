@@ -6,6 +6,12 @@ branch-free dispatch, log pruning, a recovery byte sequence. These are
 non-functional properties: the user never sees them directly, but the design
 collapses if they break.
 
+**Scope.** This tier is most relevant to systems, games, and
+performance-critical code, where a physical property (no allocation, bounded
+depth) is load-bearing. On a typical application most tests are behaviors and
+pipelines; reach for an invariant only when the design genuinely rests on a
+property no behavioral assertion would catch.
+
 The archetype (illustrative): a counting-allocator hook installed for the test,
 with allocation deltas asserted to be zero across the hot operation. New
 invariant tests follow that shape and are recorded alongside the design
@@ -25,18 +31,17 @@ invariant.
 
 ## Instrumentation: how spans interact with invariants
 
-Spans/logs go through a structured instrumentation layer, gated by the app's
-log env var (only emitting when it's set). When adding instrumentation, pick
-the level by how often the code runs:
+The only testing-relevant rule: **adding an instrumentation span inside a
+hot path can introduce an allocation, so re-run the matching zero-allocation
+invariant after the span lands. A failing invariant means the span placement is
+wrong, not the invariant.**
 
-- **INFO and above**: cold paths (process start, plugin/module load, connection
-  or file open). Always-on cost is acceptable; cardinality is low.
-- **DEBUG**: medium paths invoked per-request / per-frame at most (request
-  handler, render, event dispatch).
-- **TRACE**: per-inner-loop work (per-row render, per-record walk, per-segment
-  scan). These run under the zero-allocation invariants — verify those tests
-  still pass after the span lands. A failing invariant means the span placement
-  is wrong, not the invariant.
+The structured-tracing model itself — one pipeline, and log levels budgeted by
+call frequency (INFO on cold paths, DEBUG per-request, TRACE off by default on
+inner loops) — is a design concern, not a testing one. It lives in one place:
+the Observability star of the `architecture-canon` skill. Consult it there
+rather than re-deriving it here; this file owns only the "re-run the invariant
+after a span lands" consequence.
 
 ## Red flags
 
