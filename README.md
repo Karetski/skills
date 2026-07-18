@@ -1,4 +1,4 @@
-# skills
+# agentkit
 
 A personal **source of truth for Claude Code configuration** — kept as a
 plain, symlink-friendly repo (dotfiles style), not a plugin. It holds more than
