@@ -26,36 +26,6 @@ matches the work.
 This repo is its own installer: open Claude Code **in this directory** and ask
 it to wire everything up. Paste this prompt:
 
-> Install this repo into my Claude Code config. Symlink every skill directory
-> under `skills/` into `~/.claude/skills/` — symlinks, not copies, so my edits
-> here stay live. Then merge the `PostToolUse` block from
-> `hooks/settings.hook.example.json` into `~/.claude/settings.json` (create it
-> if it doesn't exist), rewriting the hook command to this repo's absolute path.
-> Then offer to copy the `coding-discipline` core into `~/.claude/CLAUDE.md` so
-> it's always-on. Run `python3 validate.py` before you start, and tell me to
-> restart Claude Code when you're done.
-
-Everything the agent does — the symlinks, the JSON merge, the path fix — is the
-part that's easy to get subtly wrong by hand, which is exactly why the config
-that governs how you work should install itself the same way. Restart Claude
-Code (or start a new session) afterward so it picks up the new skills and hook.
-
-To pull in just one skill for a single project, ask for that instead: *"symlink
-`skills/architecture-canon` into this project's `.claude/skills/`."*
-
-<details>
-<summary>Prefer to run it by hand?</summary>
-
-```sh
-# Skills (all of them) into your user skills dir:
-for d in skills/*/ ; do ln -s "$PWD/$d" ~/.claude/skills/ ; done
-# …or a single one into a project:
-ln -s "$PWD/skills/architecture-canon" /path/to/project/.claude/skills/
-
-# The drift-check hook: merge hooks/settings.hook.example.json into your
-# ~/.claude/settings.json (edit the path if this repo lives elsewhere).
-```
-
 Then restart Claude Code. Conduct (`coding-discipline`) is best always-on — copy
 its core into `~/.claude/CLAUDE.md` (see *Making conduct always-on*).
 </details>
