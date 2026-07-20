@@ -36,4 +36,4 @@ When a review finds a helper or owner type that doesn't earn its existence (`ref
 
 ## See also
 
-Stands alone — the skills below are optional companions, not dependencies: `architecture-canon` (subsystem-level design), `coding-discipline` (agent conduct), and `simplify-ruthless` (a ranked deletion audit for helpers that don't earn their keep).
+Stands alone — the skills below are optional companions, not dependencies: `architecture-canon` (subsystem-level design), the always-on coding conduct, and `simplify-ruthless` (a ranked deletion audit for helpers that don't earn their keep).

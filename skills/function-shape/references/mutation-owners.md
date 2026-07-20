@@ -23,4 +23,4 @@ Verbs are domain-shaped (`enqueue`, `drain`, `clear`), not container-shaped (`pu
 
 - A struct exposes mutable public fields and call sites mutate them directly. → The owner isn't owning. Wrap in named verbs or make the field private and replaced wholesale.
 - A "manager" type whose every method is a thin wrapper over a list / map / handle-map. → Either the domain verbs are missing (add them) or the type isn't earning its existence (delete it; use the collection directly).
-- A shared-mutable field (mutex-guarded cell) whose only callers lock it and mutate inline. → The shared-mutation case has no owner. Either define one, or move to message-passing so state changes through one channel instead of ambient locking.
+- A shared-mutable field (guarded by a lock) whose only callers lock it and mutate inline. → The shared-mutation case has no owner. Either define one, or move to message-passing so state changes through one channel instead of ambient locking.

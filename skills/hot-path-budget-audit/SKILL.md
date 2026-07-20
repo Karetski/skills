@@ -2,6 +2,7 @@
 name: hot-path-budget-audit
 description: Static audit of a latency-critical path for blocking IO, allocations, unbounded work, and per-iteration budget violations. Use when adding or changing code on a hot path (a game or simulation tick, a render frame, a request handler, an event-loop callback, an inner loop) or when investigating gradual performance degradation. Enumerates the path, flags forbidden operations per function, bounds each unit of work, estimates worst-case cost, and returns a green/yellow/red verdict per unit. A per-iteration time budget is one of the hardest properties to hold, because violating it rarely fails a test — it degrades under load.
 context: fork
+agent: general-purpose
 ---
 
 # hot-path-budget-audit

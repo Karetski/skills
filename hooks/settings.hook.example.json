@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$HOME/Developer/skills/hooks/wire-drift-reminder.sh"
+            "command": "/ABSOLUTE/PATH/TO/agentkit/hooks/wire-drift-reminder.sh"
           }
         ]
       }

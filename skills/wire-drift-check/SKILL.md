@@ -2,6 +2,7 @@
 name: wire-drift-check
 description: Verify that every mirror, generated artifact, golden fixture, and both sides of a duplicated contract were updated together. Use when changing a wire format, serialization schema, API contract, shared constant, or code-generated mirror — anything duplicated across a boundary (two languages, client/server, generated plus hand-written) — when asking "did I update both sides" or "regenerate the bindings", or before opening a PR that touches a shared contract. Checks codegen freshness, golden fixtures, roundtrip (encode/decode) coverage, both-sides handling, and discriminant/field-order stability.
 context: fork
+agent: general-purpose
 ---
 
 # wire-drift-check

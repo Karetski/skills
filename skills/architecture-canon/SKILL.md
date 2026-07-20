@@ -52,4 +52,4 @@ Conversely, when several stars flag the *same* root cause — a feature built as
 
 ## See also
 
-Stands alone — the skills below are optional companions, not dependencies. These apply the same stars to a finished change: `principle-review` (whole-change review), `hot-path-budget-audit` (enforces the Acton and Observability stars on a latency-critical path), and `wire-drift-check` (enforces the Plan 9 single-source-of-truth across a duplicated boundary). Companion standards: `coding-discipline`, `function-shape`, `behavioral-testing`.
+Stands alone — the skills below are optional companions, not dependencies. These apply the same stars to a finished change: `principle-review` (whole-change review), `hot-path-budget-audit` (enforces the Acton and Observability stars on a latency-critical path), and `wire-drift-check` (enforces the Plan 9 single-source-of-truth across a duplicated boundary). Companion standards: `function-shape`, `behavioral-testing`, and the always-on coding conduct.

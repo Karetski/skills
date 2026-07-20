@@ -2,6 +2,7 @@
 name: principle-review
 description: Review a substantial change against the project's own stated principles, one principle at a time; when the project has no principles doc, fall back to a built-in rubric (deep modules, least surprise, single source of truth, simplicity, predictability, verify-mechanically). Use before merging a new feature, module, or subsystem, when asked "does this fit our design" / "is this the right shape", when auditing a PR for convention alignment, or when onboarding a change into an unfamiliar codebase. Reads the design doc, walks the change against it principle by principle, and ends with a ship / revise / reject verdict.
 context: fork
+agent: general-purpose
 ---
 
 # principle-review
@@ -103,5 +104,5 @@ Stands alone — the skills below are optional companions, not
 dependencies. The specialized checks in step 5 name three review skills
 you can run when a change enters their domain, but you can perform those
 checks from this file alone. The standards behind the fallback rubric:
-`architecture-canon` (design), `coding-discipline` (agent conduct),
-`function-shape` (per-function shape), `behavioral-testing` (tests).
+`architecture-canon` (design), `function-shape` (per-function shape),
+and `behavioral-testing` (tests) — plus the always-on coding conduct.

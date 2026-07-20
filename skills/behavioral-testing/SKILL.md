@@ -109,4 +109,4 @@ Stands alone — the skills below are optional companions, not dependencies.
 `hot-path-budget-audit` turns its verdicts into durable proof via the invariant
 tier (`references/invariants.md`); `wire-drift-check` relies on the roundtrip
 coverage the behavior and pipeline tiers provide. Companion standards:
-`architecture-canon`, `function-shape`, `coding-discipline`.
+`architecture-canon`, `function-shape`, and the always-on coding conduct.

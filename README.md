@@ -2,17 +2,20 @@
 
 A personal **source of truth for Claude Code configuration** — kept as a
 plain, symlink-friendly repo (dotfiles style), not a plugin. It holds more than
-a list of skills: reusable `skills/` you drop into `~/.claude/skills/`, and a
-`hooks/` script you wire into `settings.json`. Room to grow into `agents/`,
-`output-styles/`, and a `CLAUDE.md` as the config expands.
+a list of skills: reusable `skills/` you drop into `~/.claude/skills/`, a
+canonical `CLAUDE.md` of always-on conduct you import into `~/.claude/CLAUDE.md`,
+and a `hooks/` script you wire into `settings.json`. Room to grow into `agents/`
+and `output-styles/` as the config expands.
 
 ```
 .
+├── CLAUDE.md             # always-on coding conduct (single source)
 ├── skills/               # knowledge + workflows, loaded on demand
 │   └── <name>/SKILL.md   #   (+ optional references/ for detail)
 ├── hooks/
 │   ├── wire-drift-reminder.sh        # a PostToolUse nudge
 │   └── settings.hook.example.json    # how to wire it into settings.json
+├── .github/workflows/    # CI: runs validate.py on every push
 ├── validate.py           # mechanical checks over the repo
 └── README.md
 ```
@@ -23,12 +26,12 @@ matches the work.
 
 ## Install
 
-This repo is its own installer: open Claude Code **in this directory** and ask
-it to wire everything up. Paste this prompt:
-
-Then restart Claude Code. Conduct (`coding-discipline`) is best always-on — copy
-its core into `~/.claude/CLAUDE.md` (see *Making conduct always-on*).
-</details>
+This repo is its own installer: open Claude Code **in this directory** and ask it
+to wire everything up — symlink every `skills/` directory into `~/.claude/skills/`,
+import this repo's `CLAUDE.md` into `~/.claude/CLAUDE.md` (an `@`-import line, not a
+copy), and merge the `hooks/` snippet into `~/.claude/settings.json` with the hook
+command pointed at this repo. Run `python3 validate.py` first, then restart Claude
+Code so it picks up the new skills and hook.
 
 ## Choosing the right mechanism
 
@@ -38,7 +41,7 @@ reach for ([source](https://code.claude.com/docs/en/features-overview)):
 
 | Mechanism | Use it for | Loads | Determinism | Here |
 |---|---|---|---|---|
-| **CLAUDE.md** | "Always do X" conduct and conventions that apply to *all* work | Every session | Model interprets | `coding-discipline`'s core |
+| **CLAUDE.md** | "Always do X" conduct and conventions that apply to *all* work | Every session | Model interprets | this repo's `CLAUDE.md` |
 | **Skill** | On-demand knowledge or a workflow you trigger with `/name` | When invoked or matched | Model interprets | `skills/*` |
 | **Subagent** (`context: fork`) | Work that reads many files but should return only a verdict, keeping your main context clean | When delegated | Model interprets, isolated | the four review verbs |
 | **Hook** | A guardrail or reaction that must fire *every* time, no thinking required | On its event | Guaranteed | `wire-drift-reminder` |
@@ -46,20 +49,28 @@ reach for ([source](https://code.claude.com/docs/en/features-overview)):
 Rule of thumb, quoting the docs: *"Put it in CLAUDE.md if Claude should always
 know it… Put it in a skill if it's reference material Claude needs sometimes or a
 workflow you trigger. If a rule must hold every time, make it a hook rather than
-a prompt instruction."* That's why the drift check is a hook, the conduct wants
-to be CLAUDE.md, and the audits are `context: fork` skills — each on the
+a prompt instruction."* That's why the drift check is a hook, the conduct is
+CLAUDE.md, and the audits are `context: fork` skills — each on the
 mechanism that fits it.
 
 ## The skills
+
+Conduct that governs *all* work is always-on in [`CLAUDE.md`](CLAUDE.md), not a skill (see *Making conduct always-on*). The skills below load on demand.
 
 **Standards** — ambient guidance on what good code looks like, while you write and review:
 
 | Skill | Governs | Applies to |
 |---|---|---|
-| [`coding-discipline`](skills/coding-discipline/SKILL.md) | Agent conduct — think before coding, simplicity first, surgical changes, goal-driven execution, calibration checklist. | any work (best always-on) |
 | [`architecture-canon`](skills/architecture-canon/SKILL.md) | Ten borrowed design north-stars, each with a *forbids* clause and quotable red flags. | Hickey/SICP/MLIR anywhere; the rest labeled by habitat |
 | [`function-shape`](skills/function-shape/SKILL.md) | One function's shape — phase flow, branch ceiling, error-handling moves, pipeline naming, mutation ownership, comments. | any codebase |
 | [`behavioral-testing`](skills/behavioral-testing/SKILL.md) | Behavioral, scenario-named tests (given/when/then), the four tiers, black-box-first — placement treated as a per-ecosystem convention. | any codebase |
+
+**Workflows** — on-demand methodologies you follow *while* working:
+
+| Skill | Governs | Applies to |
+|---|---|---|
+| [`debugging-methodology`](skills/debugging-methodology/SKILL.md) | Diagnosis discipline — reproduce first, hypothesize before patching, bisect to the change, fix the root cause not the symptom. | any codebase |
+| [`commit-discipline`](skills/commit-discipline/SKILL.md) | Commit & PR shape — atomic commits, refactor split from behavior, message shape, reviewable slices, bisectable history. | any project under version control |
 
 **Review verbs** — on-demand audits you run against a change before merging. Each
 declares `context: fork`, so it runs in an isolated subagent and returns just its
@@ -82,10 +93,12 @@ applied to the collection itself.
 
 | Situation | Skill |
 |---|---|
-| Starting any coding task; handing off a diff | `coding-discipline` |
+| Starting any coding task; handing off a diff | always-on via `CLAUDE.md` |
 | Proposing a new type / module / interface / config key | `architecture-canon` |
 | Writing/reviewing one function; picking an error strategy | `function-shape` |
 | Writing/placing a test | `behavioral-testing` |
+| Diagnosing a failing test, crash, or regression | `debugging-methodology` |
+| Shaping commits / opening a PR | `commit-discipline` |
 | "Does this change fit our design?" before merge | `principle-review` |
 | "Simplify / is this over-engineered / can we delete X?" | `simplify-ruthless` |
 | Changing a wire format / schema / generated mirror | `wire-drift-check` (+ the hook nudges you) |
@@ -93,11 +106,13 @@ applied to the collection itself.
 
 ## Making conduct always-on
 
-`coding-discipline` governs *all* work, so it behaves best as always-on context
-rather than a maybe-loaded skill. Copy its core into your `~/.claude/CLAUDE.md`
-(all projects) or a project `./CLAUDE.md` (shared with the team) — the docs' rule
-is "always do X" belongs in CLAUDE.md, and reference/workflows in skills. The
-skill stays available as `/coding-discipline` for an explicit walk-through.
+The coding conduct governs *all* work, so it lives always-on in this repo's
+[`CLAUDE.md`](CLAUDE.md) rather than as a maybe-loaded skill. Import it — don't
+copy it — into your `~/.claude/CLAUDE.md` (all projects) or a project `./CLAUDE.md`
+(shared with the team) by adding a single `@`-import line pointing at this repo's
+`CLAUDE.md`. One canonical file, imported wherever it's needed, so the conduct
+can't drift into two copies — the docs' rule is "always do X" belongs in
+CLAUDE.md, reference and workflows in skills.
 
 ## Extending this repo
 
@@ -109,7 +124,7 @@ is what makes it a source of truth rather than a pile:
 | a skill | `skills/<name>/SKILL.md` (+ `references/`) | symlink into `~/.claude/skills/` |
 | a subagent | `agents/<name>.md` | symlink into `~/.claude/agents/` |
 | a hook | `hooks/<script>` + a settings snippet | merge into `~/.claude/settings.json` |
-| always-on conduct | `CLAUDE.md` | symlink/import into `~/.claude/CLAUDE.md` |
+| always-on conduct | `CLAUDE.md` | import (`@`-line) into `~/.claude/CLAUDE.md` |
 
 ## Applying the skills to a project
 
@@ -117,9 +132,10 @@ The skills aim to be project-neutral, but neutral is not the same as universal �
 and the collection is honest about the difference. It was genericized from a Rust
 TUI and a systems project, and some content is native to that habitat:
 
-- **Universally applicable:** `coding-discipline`, `function-shape`,
-  `simplify-ruthless`, `principle-review`, and the Hickey / SICP / MLIR stars of
-  `architecture-canon` bite on any codebase — web, backend, mobile, data, systems.
+- **Universally applicable:** the always-on conduct, `function-shape`,
+  `debugging-methodology`, `commit-discipline`, `simplify-ruthless`,
+  `principle-review`, and the Hickey / SICP / MLIR stars of `architecture-canon`
+  bite on any codebase — web, backend, mobile, data, systems.
 - **Habitat-bound (labeled as such):** the Acton / Plan 9 / Erlang / Smalltalk /
   Observability stars of `architecture-canon`, the allocation-invariant tier of
   `behavioral-testing`, and the systems half of `hot-path-budget-audit` earn their
@@ -141,9 +157,12 @@ python3 validate.py
 ```
 
 `validate.py` enforces the repo's promises: skill frontmatter (name = directory,
-description + `when_to_use` under the 1,536-char cap), body ≤500 lines, references
-one level deep, no `[[wikilinks]]`, every hook script executable, and the hook
-settings snippet valid JSON. Run it before publishing or after edits.
+only documented fields, description + `when_to_use` under the 1,536-char cap),
+body ≤500 lines, references one level deep, no `[[wikilinks]]`, a non-empty
+canonical `CLAUDE.md`, README↔skills link parity (every skill is linked, and
+every link resolves), every hook script executable, the hook snippet valid JSON, and no concrete
+home path hardcoded in it. Run it before publishing or after edits — and CI runs
+it on every push.
 
 ## License
 

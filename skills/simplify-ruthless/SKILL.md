@@ -2,6 +2,7 @@
 name: simplify-ruthless
 description: Ruthless deletion audit whose output is a ranked deletion list, never additions. Use when asked to "simplify this", "tighten this module", "can we delete X", when something "feels heavy", "is this overkill / over-engineered", when trimming a feature, or when auditing an abstraction for whether it earns its keep. Tests each abstraction against over-engineering smells (rule of three, speculative flexibility, one-caller generics, pass-through wrappers, single-implementation interfaces) and ranks deletions by lines removed. Backs off when the request is "make this work" (a debugging session), not "make this smaller".
 context: fork
+agent: general-purpose
 ---
 
 # simplify-ruthless
@@ -90,6 +91,6 @@ to clean up and auto-fix; reach for this when you specifically want the case for
 ## See also
 
 Stands alone — the skills below are optional companions, not
-dependencies: `coding-discipline` (the write-time "simplicity first"
-default), `architecture-canon` (the design-level case against complected
+dependencies: the always-on coding conduct (the write-time "simplicity
+first" default), `architecture-canon` (the design-level case against complected
 types), and `function-shape` (when a helper earns its existence).

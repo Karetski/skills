@@ -4,7 +4,7 @@ The choice is not vibes. Each move encodes a different claim about whose problem
 
 | Move | When | Example |
 |---|---|---|
-| **Panic / abort** | The caller violated a core invariant. The system can't proceed coherently. | A handle used after the resource it referenced was released; a typed key from a stale generation of a handle map; double-initialization of a singleton service. |
+| **Panic / abort** | The caller violated a core invariant. The system can't proceed coherently. | A handle used after the resource it referenced was released; double-initialization of a singleton service. |
 | **Return an empty-absent value (null/None) or a typed error** | Absence or expected failure is normal. The edge decides how to present or recover. | "No active component for this slot"; a working directory that doesn't exist on disk; a lookup key not registered; a parser found no match. |
 | **Encode failure in the protocol** | A surrounding supervised lifecycle must survive the failure. This move assumes that architecture — a long-running task under a supervisor that observes typed outcomes. When that is the shape, model the failure as a typed failure event the supervisor observes, rather than unwinding. | A typed failure event published by the supervisor instead of tearing down; a tool/RPC reply with a typed error variant; a stream that yields an error event and continues. |
 

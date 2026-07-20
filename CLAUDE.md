@@ -1,9 +1,8 @@
----
-name: coding-discipline
-description: Self-discipline defaults for coding work — think before coding, simplicity first, surgical changes, goal-driven execution — biasing toward caution over speed. Use when fixing a bug or regression, adding or extending a feature, refactoring, implementing or designing something, reviewing a diff, or editing any persistent text (code comments, docs, memory or skill files). Ends with a calibration checklist to walk before handing off a change; if a check fails, slow down or surface the tradeoff rather than shipping past it.
----
+<!-- Canonical always-on coding conduct. This is the single source: import it
+     into ~/.claude/CLAUDE.md (see the repo README) rather than copying it, so
+     there is no second copy to drift. Working on this repo also loads it. -->
 
-# coding discipline
+# Coding conduct
 
 How to behave when doing coding work. These rules govern the agent's own conduct — not the shape of the code or its tests — and hold whether you're proposing a subsystem or fixing a typo.
 
@@ -132,6 +131,6 @@ Before handing off a slice, walk this list:
 
 If any answer is no, slow down. Name it. Don't ship past it.
 
-## See also
+## Companion skills
 
-Stands alone — the skills below are optional companions, not dependencies. The standards `architecture-canon` (design-level rules), `function-shape` (per-function shape), and `behavioral-testing` (test shape) layer with it; the review verbs `principle-review`, `simplify-ruthless`, `wire-drift-check`, and `hot-path-budget-audit` run against a finished change.
+This conduct is always-on. The on-demand skills layer with it, each triggered when its habitat appears: the standards `architecture-canon` (design-level rules), `function-shape` (per-function shape), and `behavioral-testing` (test shape); the workflows `debugging-methodology` (diagnosing a failure) and `commit-discipline` (shaping commits and PRs); and the review verbs `principle-review`, `simplify-ruthless`, `wire-drift-check`, and `hot-path-budget-audit`, run against a finished change.

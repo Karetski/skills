@@ -1,0 +1,20 @@
+# Runs the repo's own mechanical validator on every push and PR.
+# "Verify mechanically, not by convention" — applied to this repo itself, so the
+# invariants in validate.py hold without anyone remembering to run it by hand.
+name: validate
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Run validate.py
+        run: python3 validate.py
